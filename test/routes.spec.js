@@ -1,40 +1,40 @@
-process.env.NODE_ENV = 'test'
-const chai = require('chai')
-const should = chai.should()
-const chaiHttp = require('chai-http')
-const server = require('../server')
+process.env.NODE_ENV = 'test';
+const chaiHttp = require('chai-http');
+const server = require('../server');
+const chai = require('chai');
+
+const should = chai.should();
 
 const configuration = require('../knexfile')['test'];
 const database = require('knex')(configuration);
 
-chai.use(chaiHttp)
+chai.use(chaiHttp);
 
 describe('Everything', () => {
-
   before((done) => {
     database.migrate.latest()
     .then(() => {
       database.seed.run()
       .then(() => {
-        done()
-      })
-    })
-  })
+        done();
+      });
+    });
+  });
 
   afterEach((done) => {
     database.seed.run()
     .then(() => {
-      done()
-    })
-  })
+      done();
+    });
+  });
 
   describe('Client Routes', () => {
     it('should return the homepage with test', (done) => {
       chai.request(server)
       .get('/')
       .end((error, response) => {
-        response.should.have.status(200)
-        done()
+        response.should.have.status(200);
+        done();
       });
     });
 
@@ -42,26 +42,25 @@ describe('Everything', () => {
       chai.request(server)
       .get('/folders/urls')
       .end((error, response) => {
-        response.should.have.status(404)
-        done()
+        response.should.have.status(404);
+        done();
       });
-    })
+    });
   });
 
   describe('API Routes', () => {
-
     describe('GET /api/v1/artwork', () => {
       it('should return all of the artwork', (done) => {
         chai.request(server)
         .get('/api/v1/artwork')
         .end((error, response) => {
-          response.should.have.status(200)
-          response.should.be.json
-          response.body.should.be.a('array')
-          response.body.length.should.equal(8)
-          response.body[0].should.have.property('TITLE')
-          response.body[0].TITLE.should.equal('3 Wild Spaces two of three')
-          done()
+          response.should.have.status(200);
+          response.should.be.json;
+          response.body.should.be.a('array');
+          response.body.length.should.equal(8);
+          response.body[0].should.have.property('TITLE');
+          response.body[0].TITLE.should.equal('3 Wild Spaces two of three');
+          done();
         });
       });
 
@@ -69,10 +68,10 @@ describe('Everything', () => {
         chai.request(server)
         .get('/api/v1/foolfers')
         .end((error, response) => {
-          response.should.have.status(404)
-          done()
+          response.should.have.status(404);
+          done();
         });
-      })
+      });
     });
 
     describe('GET /api/v1/artwork/', () => {
@@ -80,13 +79,13 @@ describe('Everything', () => {
         chai.request(server)
         .get('/api/v1/folders/73')
         .end((error, response) => {
-          response.should.have.status(200)
-          response.should.be.json
-          response.body.should.be.a('array')
-          response.body.length.should.equal(1)
-          response.body[0].should.have.property('TITLE')
-          response.body[0].TITLE.should.equal('3 Wild Spaces two of three')
-          done()
+          response.should.have.status(200);
+          response.should.be.json;
+          response.body.should.be.a('array');
+          response.body.length.should.equal(1);
+          response.body[0].should.have.property('TITLE');
+          response.body[0].TITLE.should.equal('3 Wild Spaces two of three');
+          done();
         });
       });
 
@@ -94,10 +93,10 @@ describe('Everything', () => {
         chai.request(server)
         .get('/api/v1/foolfers/75849392')
         .end((error, response) => {
-          response.should.have.status(404)
-          done()
+          response.should.have.status(404);
+          done();
         });
-      })
+      });
     });
 
     describe('GET /api/v1/folders/:folder_id/urls', () => {
@@ -105,13 +104,13 @@ describe('Everything', () => {
         chai.request(server)
         .get('/api/v1/folders/1/urls')
         .end((error, response) => {
-          response.should.have.status(200)
-          response.should.be.json
-          response.body.should.be.a('array')
-          response.body.length.should.equal(1)
-          response.body[0].should.have.property('title')
-          response.body[0].title.should.equal('TEST')
-          done()
+          response.should.have.status(200);
+          response.should.be.json;
+          response.body.should.be.a('array');
+          response.body.length.should.equal(1);
+          response.body[0].should.have.property('title');
+          response.body[0].title.should.equal('TEST');
+          done();
         });
       });
 
@@ -119,10 +118,10 @@ describe('Everything', () => {
         chai.request(server)
         .get('/api/v1/folders/1/urlscddd')
         .end((error, response) => {
-          response.should.have.status(404)
-          done()
+          response.should.have.status(404);
+          done();
         });
-      })
+      });
     });
 
     describe('GET /:id', () => {
@@ -130,10 +129,10 @@ describe('Everything', () => {
         chai.request(server)
         .get('/1')
         .end((error, response) => {
-          response.should.have.status(200)
-          response.redirects.should.be.a('array')
-          response.redirects[0].should.equal('http://www.pinterest.com/')
-          done()
+          response.should.have.status(200);
+          response.redirects.should.be.a('array');
+          response.redirects[0].should.equal('http://www.pinterest.com/');
+          done();
         });
       });
     });
@@ -144,38 +143,37 @@ describe('Everything', () => {
         .post('/api/v1/folders')
         .send(
           {
-            title: 'Knuth'
-          }
-        )
+            title: 'Knuth',
+          })
         .end((error, response) => {
-          response.should.have.status(201)
-          response.body.should.be.a('object')
-          response.body.should.have.property('title')
-          response.body.title.should.equal('Knuth')
+          response.should.have.status(201);
+          response.body.should.be.a('object');
+          response.body.should.have.property('title');
+          response.body.title.should.equal('Knuth');
           chai.request(server)
           .get('/api/v1/folders')
         .end((err, response) => {
-           response.should.have.status(200)
-           response.should.be.json
-           response.body.should.be.a('array')
-           response.body.length.should.equal(2)
-           response.body[1].should.have.property('title')
-           response.body[1].title.should.equal('Knuth')
-           done()
-          })
-        })
-      })
+          response.should.have.status(200);
+          response.should.be.json;
+          response.body.should.be.a('array');
+          response.body.length.should.equal(2);
+          response.body[1].should.have.property('title');
+          response.body[1].title.should.equal('Knuth');
+          done();
+        });
+        });
+      });
 
       it.skip('should not create a record with missing data', (done) => {
         chai.request(server)
         .post('/api/v1/folders')
         .send({})
         .end((err, response) => {
-          response.should.have.status(422)
-          response.body.error.should.equal('You are missing data!')
-          done()
-        })
-      })
+          response.should.have.status(422);
+          response.body.error.should.equal('You are missing data!');
+          done();
+        });
+      });
     });
   });
 
@@ -188,37 +186,36 @@ describe('Everything', () => {
             title: 'Marissa',
             fullURL: 'www.marissa.com',
             visited: 0,
-            folder_id: 1
-          }
-        )
+            folder_id: 1,
+          })
         .end((error, response) => {
-          response.should.have.status(201)
-          response.body[1].should.be.a('object')
-          response.body[1].should.have.property('title')
-          response.body[1].title.should.equal('Marissa')
+          response.should.have.status(201);
+          response.body[1].should.be.a('object');
+          response.body[1].should.have.property('title');
+          response.body[1].title.should.equal('Marissa');
           chai.request(server)
           .get('/api/v1/folders/1/urls')
         .end((err, response) => {
-           response.should.have.status(200)
-           response.should.be.json
-           response.body.should.be.a('array')
-           response.body.length.should.equal(2)
-           response.body[1].should.have.property('title')
-           response.body[1].title.should.equal('Marissa')
-           done()
-          })
-        })
-      })
+          response.should.have.status(200);
+          response.should.be.json;
+          response.body.should.be.a('array');
+          response.body.length.should.equal(2);
+          response.body[1].should.have.property('title');
+          response.body[1].title.should.equal('Marissa');
+          done();
+        });
+        });
+      });
 
       it.skip('should not create a record with missing data', (done) => {
         chai.request(server)
         .post('/api/v1/folders/:folder_id/urls')
         .send({})
         .end((err, response) => {
-          response.should.have.status(422)
-          response.body.error.should.equal('You are missing data!')
-          done()
-        })
-      })
+          response.should.have.status(422);
+          response.body.error.should.equal('You are missing data!');
+          done();
+        });
+      });
     });
-  });
+});

@@ -1,6 +1,8 @@
 const express = require('express');
+
 const app = express();
 const bodyParser = require('body-parser');
+const fs = require('fs');
 
 const environment = process.env.NODE_ENV || 'development';
 const configuration = require('./knexfile')[environment];
@@ -15,10 +17,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(express.static('public'));
 
-app.get('/', (request, response ) => {
+app.get('/', (request, response) => {
   fs.readFile(`${__dirname}/index.html`, (err, file) => {
-    response.send(file)
-  })
+    response.send(file);
+  });
 });
 
 app.get('/api/v1/artwork', (request, response) => {
@@ -41,30 +43,30 @@ app.get('/api/v1/location', (request, response) => {
 
 app.get('/api/v1/artwork/:id', (request, response) => {
   database('artwork').where('id', request.params.id).select()
-  .then(artwork => {
+  .then((artwork) => {
     response.status(200).json(artwork);
   })
-  .catch(error => {
+  .catch((error) => {
     console.error('error: ', error)
   });
 });
 
 app.get('/api/v1/location/:id', (request, response) => {
   database('location').where('id', request.params.id).select()
-  .then(location => {
+  .then((location) => {
     response.status(200).json(location);
   })
-  .catch(error => {
+  .catch((error) => {
     console.error('error: ', error)
   });
 });
 
 app.get('/api/v1/artists/:id', (request, response) => {
   database('artists').where('id', request.params.id).select()
-  .then(artists => {
+  .then((artists) => {
     response.status(200).json(artists);
   })
-  .catch(error => {
+  .catch((error) => {
     console.error('error: ', error)
   });
 });
