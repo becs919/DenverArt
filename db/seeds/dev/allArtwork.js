@@ -8,7 +8,7 @@ exports.seed = function(knex, Promise) {
       'YEAR_INSTALLED',
       'TITLE',
       null,
-      null,
+      'MATERIAL',
       null,
       'DETAILED_LOCATION',
       'NOTES',

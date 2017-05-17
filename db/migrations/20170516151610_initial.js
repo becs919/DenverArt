@@ -7,13 +7,6 @@ exports.up = function(knex, Promise) {
       table.timestamps(true, true);
     }),
 
-    knex.schema.createTable('material', function(table) {
-      table.increments('id').primary();
-      table.string('MATERIAL');
-
-      table.timestamps(true, true);
-    }),
-
     knex.schema.createTable('location', function(table) {
       table.increments('id').primary();
       table.string('LOCATION');
@@ -29,9 +22,7 @@ exports.up = function(knex, Promise) {
       table.integer('ARTIST_ID').unsigned()
       table.foreign('ARTIST_ID')
         .references('artists.id');
-      table.integer('MATERIAL_ID').unsigned()
-      table.foreign('MATERIAL_ID')
-        .references('material.id');
+      table.string('MATERIAL');
       table.integer('LOCATION_ID').unsigned()
       table.foreign('LOCATION_ID')
         .references('location.id');
@@ -49,7 +40,6 @@ exports.down = function(knex, Promise) {
   return Promise.all([
     knex.schema.dropTable('artwork'),
     knex.schema.dropTable('artists'),
-    knex.schema.dropTable('material'),
     knex.schema.dropTable('location')
   ]);
 };
