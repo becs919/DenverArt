@@ -26,19 +26,19 @@ app.get('/', (request, response) => {
 app.get('/api/v1/artwork', (request, response) => {
   database('artwork').select()
     .then(artwork => response.status(200).json(artwork))
-    .catch(error => console.error('error: ', error))
+    .catch(error => console.error('error: ', error));
 });
 
 app.get('/api/v1/artists', (request, response) => {
   database('artists').select()
     .then(artists => response.status(200).json(artists))
-    .catch(error => console.error('error: ', error))
+    .catch(error => console.error('error: ', error));
 });
 
 app.get('/api/v1/location', (request, response) => {
   database('location').select()
     .then(location => response.status(200).json(location))
-    .catch(error => console.error('error: ', error))
+    .catch(error => console.error('error: ', error));
 });
 
 app.get('/api/v1/artwork/:id', (request, response) => {
@@ -47,7 +47,7 @@ app.get('/api/v1/artwork/:id', (request, response) => {
     response.status(200).json(artwork);
   })
   .catch((error) => {
-    console.error('error: ', error)
+    console.error('error: ', error);
   });
 });
 
@@ -57,7 +57,7 @@ app.get('/api/v1/location/:id', (request, response) => {
     response.status(200).json(location);
   })
   .catch((error) => {
-    console.error('error: ', error)
+    console.error('error: ', error);
   });
 });
 
@@ -67,13 +67,13 @@ app.get('/api/v1/artists/:id', (request, response) => {
     response.status(200).json(artists);
   })
   .catch((error) => {
-    console.error('error: ', error)
+    console.error('error: ', error);
   });
 });
 
 if (!module.parent) {
   app.listen(app.get('port'), () => {
-    console.log(`${app.locals.title} is running on ${app.get('port')}.`)
+    console.log(`${app.locals.title} is running on ${app.get('port')}.`);
   });
 }
 
