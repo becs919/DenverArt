@@ -10,6 +10,7 @@ exports.seed = function(knex, Promise) {
         .then(() => {
           return knex('nailPolish').insert([
             {
+              id: 1,
               brand_id: 1,
               name: '7 Free Nail Polish Set - Red',
               price: '21.5',
@@ -23,6 +24,7 @@ exports.seed = function(knex, Promise) {
               ],
             },
             {
+              id: 2,
               brand_id: 2,
               name: 'Suncoat Girl Water-Based Nail Polish',
               price: '8.29',

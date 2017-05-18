@@ -8,7 +8,6 @@ const environment = process.env.NODE_ENV || 'development';
 const configuration = require('./knexfile')[environment];
 const database = require('knex')(configuration);
 
-
 app.set('port', process.env.PORT || 3000);
 app.locals.title = 'DenverArt';
 
@@ -26,13 +25,40 @@ app.get('/', (request, response) => {
 app.get('/api/v1/brands', (request, response) => {
   database('brands').select()
     .then(brand => response.status(200).json(brand))
-    .catch(error => console.error('error: ', error));
+    .catch((error) => {
+      response.status(404).send('no brands', error);
+      response.status(500).send({ 'server error': error });
+    });
 });
 
 app.get('/api/v1/products', (request, response) => {
-  database('nailPolish').select()
-    .then(product => response.status(200).json(product))
-    .catch(error => console.error('error: ', error));
+  const brand = request.query.brand;
+  if (!brand) {
+    database('nailPolish').select()
+    .then((products) => {
+      response.status(200).json(products);
+    })
+    .catch((error) => {
+      response.status(404).send('no brands', error);
+      response.status(500).send({ 'error: ': error });
+    });
+  } else if (brand) {
+    database('brands').where('brand', brand).first()
+    .then((searchBrand) => {
+      if (!searchBrand) {
+        response.status(404).send({ error: 'No polish found for this brand' });
+      } else {
+        database('nailPolish').where('brand_id', searchBrand.id)
+        .then((products) => {
+          response.status(200).json(products);
+        });
+      }
+    })
+    .catch((error) => {
+      response.status(404).send('no brands', error);
+      response.status(500).send({ 'error: ': error });
+    });
+  }
 });
 
 app.get('/api/v1/brands/:id', (request, response) => {
@@ -40,8 +66,8 @@ app.get('/api/v1/brands/:id', (request, response) => {
   .then((brand) => {
     response.status(200).json(brand);
   })
-  .catch((error) => {
-    console.error('error.html', error);
+  .catch(() => {
+    response.status(404).send('no brand matching that id');
   });
 });
 
@@ -50,32 +76,27 @@ app.get('/api/v1/products/:id', (request, response) => {
   .then((product) => {
     response.status(200).json(product);
   })
-  .catch((error) => {
-    console.error('error: ', error);
+  .catch(() => {
+    response.status(404).send('no product matching that id');
   });
 });
-// NOT ACTUALLY INSERTING
-// app.post('/api/v1/brands', (request, response) => {
-//   const brandName = request.body.brand;
-//   const brand = request.body.title;
-//
-//   if (!brandName) {
-//     response.status(422).send({
-//       error: 'You are missing data!',
-//     });
-//   } else {
-//     database('brands').insert(brand)
-//     .then(() => {
-//       response.status(201).json({
-//         id: Math.floor(Math.random() * (500 - 30)) + 30,
-//         brand: brandName,
-//       });
-//     })
-//     .catch((error) => {
-//       console.error('error: ', error);
-//     });
-//   }
-// });
+
+app.post('/api/v1/brands', (request, response) => {
+  const brandName = request.body.brand;
+
+  if (!brandName) {
+    response.status(422).send({ error: 'You are missing data' });
+  } else {
+    database('brands').insert({ id: Math.floor(Math.random() * (500 - 30)) + 30, brand: brandName })
+    .then(() => {
+      response.status(201).json({ brandName });
+    })
+      .catch((error) => {
+        response.status(404).send({ 'error: ': error });
+        response.status(500).send({ 'error: ': error });
+      });
+  }
+});
 
 app.post('/api/v1/products/brands/:id', (request, response) => {
   const name = request.body.name;
@@ -85,17 +106,19 @@ app.post('/api/v1/products/brands/:id', (request, response) => {
 
   database('brands').where('id', request.params.id).select()
   .then(() => {
-    if (!name && !price && !rating) {
-      response.status(422).send({
-        error: 'You are missing data!',
-      });
+    if (!name) {
+      response.status(422).send({ error: 'You are missing data!' });
+    } else if (!price) {
+      response.status(422).send({ error: 'You are missing data!' });
+    } else if (!rating) {
+      response.status(422).send({ error: 'You are missing data!' });
     } else {
       database('nailPolish').insert({ brand_id: brandId, name, price, rating })
       .then(() => {
         response.status(201).json({ brand_id: brandId, name, price, rating });
       })
       .catch((error) => {
-        console.error('error: ', error);
+        response.status(404).send('no matching brand');
       });
     }
   });
@@ -103,23 +126,23 @@ app.post('/api/v1/products/brands/:id', (request, response) => {
 
 app.delete('/api/v1/products/:id', (request, response) => {
   database('nailPolish').where('id', request.params.id).delete()
-  .then((product) => {
-    response.status(200).json(product);
+  .then(() => {
+    response.sendStatus(204);
   })
-  .catch((error) => {
-    console.error('error: ', error);
+  .catch(() => {
+    response.status(404).send('nothing deleted');
   });
 });
 
-// app.delete('/api/v1/brands/:id', (request, response) => {
-//   database('brands').where('id', request.params.id).delete()
-//   .then((brand) => {
-//     response.status(200).json(brand);
-//   })
-//   .catch((error) => {
-//     console.error('error: ', error);
-//   });
-// });
+app.delete('/api/v1/brands/:id', (request, response) => {
+  database('brands').where('id', request.params.id).delete()
+  .then(() => {
+    response.sendStatus(204);
+  })
+  .catch(() => {
+    response.status(404).send('nothing deleted');
+  });
+});
 
 if (!module.parent) {
   app.listen(app.get('port'), () => {
