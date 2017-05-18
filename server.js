@@ -111,24 +111,15 @@ app.delete('/api/v1/products/:id', (request, response) => {
   });
 });
 
-app.delete('/api/v1/brands/:id', (request, response) => {
-  database('brands').where('id', request.params.id).delete()
-  .then((brand) => {
-    response.status(200).json(brand);
-  })
-  .catch((error) => {
-    console.error('error: ', error);
-  });
-});
-
-
-// exports.delete = function(req, res){
-//   var id = req.params.id;
-//   Project.remove({'_id':id},function(result) {
-//     return res.send(result);
+// app.delete('/api/v1/brands/:id', (request, response) => {
+//   database('brands').where('id', request.params.id).delete()
+//   .then((brand) => {
+//     response.status(200).json(brand);
+//   })
+//   .catch((error) => {
+//     console.error('error: ', error);
 //   });
-// };
-
+// });
 
 if (!module.parent) {
   app.listen(app.get('port'), () => {
