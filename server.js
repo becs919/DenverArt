@@ -54,7 +54,7 @@ app.get('/api/v1/products/:id', (request, response) => {
     console.error('error: ', error);
   });
 });
-
+// NOT ACTUALLY INSERTING
 // app.post('/api/v1/brands', (request, response) => {
 //   const brandName = request.body.brand;
 //   const brand = request.body.title;
