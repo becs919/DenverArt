@@ -1,5 +1,12 @@
 exports.up = function (knex, Promise) {
   return Promise.all([
+    knex.schema.dropTable('nailPolish'),
+    knex.schema.dropTable('brands'),
+  ]);
+};
+
+exports.down = function (knex, Promise) {
+  return Promise.all([
     knex.schema.createTable('brands',
   function (table) {
     table.integer('id').primary();
@@ -25,12 +32,5 @@ exports.up = function (knex, Promise) {
 
       table.timestamps(true, true);
     }),
-  ]);
-};
-
-exports.down = function (knex, Promise) {
-  return Promise.all([
-    knex.schema.dropTable('nailPolish'),
-    knex.schema.dropTable('brands'),
   ]);
 };

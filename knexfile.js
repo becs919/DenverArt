@@ -2,7 +2,7 @@ module.exports = {
 
   development: {
     client: 'pg',
-    connection: 'postgres://localhost/art',
+    connection: 'postgres://localhost/nailpolish',
     migrations: {
       directory: './db/migrations',
     },
@@ -13,7 +13,7 @@ module.exports = {
   },
   test: {
     client: 'pg',
-    connection: process.env.DATABASE_URL || 'postgres://localhost/arttest',
+    connection: process.env.DATABASE_URL || 'postgres://localhost/testnails',
     migrations: {
       directory: './db/migrations',
     },
