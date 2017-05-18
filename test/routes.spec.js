@@ -36,7 +36,7 @@ describe('Everything', () => {
         .end((error, response) => {
           response.should.have.status(200);
           response.body.should.be.a('array');
-          response.body.length.should.equal(2);
+          response.body.length.should.equal(3);
           response.body[0].should.have.property('id');
           response.body[0].id.should.equal(1);
           response.body[0].should.have.property('brand');
@@ -174,9 +174,9 @@ describe('Everything', () => {
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a('array');
-          res.body.length.should.equal(3);
-          res.body[2].should.have.property('brand');
-          res.body[2].brand.should.equal('Robbie');
+          res.body.length.should.equal(4);
+          res.body[3].should.have.property('brand');
+          res.body[3].brand.should.equal('Robbie');
           done();
         });
         });
@@ -303,21 +303,17 @@ describe('Everything', () => {
     });
 
     describe('DELETE /api/v1/brands/:id', () => {
-      it('should delete brand by id', (done) => {
+      it('should delete brand by id with no foreign key relation', (done) => {
         chai.request(server)
-        .delete('/api/v1/brands/1')
+        .delete('/api/v1/brands/3')
         .end((error, response) => {
-          console.log(response.status);
           response.should.have.status(204);
           chai.request(server)
           .get('/api/v1/brands')
         .end((err, res) => {
           res.should.have.status(200);
-          console.log(res.body);
           res.body.should.be.a('array');
-          res.body.length.should.equal(1);
-          res.body[0].should.have.property('brand');
-          res.body[0].brand.should.equal('suncoat');
+          res.body.length.should.equal(2);
           done();
         });
         });

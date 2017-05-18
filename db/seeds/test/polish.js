@@ -6,6 +6,7 @@ exports.seed = function(knex, Promise) {
         knex('brands').insert([
           { id: 1, brand: 'pacifica' },
           { id: 2, brand: 'suncoat' },
+          { id: 3, brand: 'fake' },
         ], 'id')
         .then(() => {
           return knex('nailPolish').insert([

@@ -71,6 +71,21 @@ app.get('/api/v1/brands/:id', (request, response) => {
   });
 });
 
+app.patch('/api/v1/brands/:id', (request, response) => {
+  const name = request.body.brand;
+
+  database('brands').where('id', request.params.id).update({ brand: name })
+  .then(() => {
+    if (response.okay) {
+      response.status(200).send('updated');
+    }
+    response.sendStatus(404);
+  })
+  .catch(() => {
+    response.status(404).send('not updated');
+  });
+});
+
 app.get('/api/v1/products/:id', (request, response) => {
   database('nailPolish').where('id', request.params.id).select()
   .then((product) => {
@@ -137,12 +152,16 @@ app.delete('/api/v1/products/:id', (request, response) => {
 app.delete('/api/v1/brands/:id', (request, response) => {
   database('brands').where('id', request.params.id).delete()
   .then(() => {
-    response.sendStatus(204);
+    // if (response.okay) {
+      response.status(204).send('deleted');
+    // }
+    // response.sendStatus(404);
   })
-  .catch(() => {
+  .catch((error) => {
     response.status(404).send('nothing deleted');
   });
 });
+
 
 if (!module.parent) {
   app.listen(app.get('port'), () => {
