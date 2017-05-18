@@ -517,7 +517,7 @@ module.exports = [
     ],
   },
   {
-    brand_id: 'anna sui',
+    brand_id: 19,
     name: 'Anna Sui Nail Colour',
     price: '15.0',
     image_link: 'https://d3t32hsnjxo7q6.cloudfront.net/i/eea60b0c4f3b6539c1573415a610230d_ra,w158,h184_pa,w158,h184.jpg',
