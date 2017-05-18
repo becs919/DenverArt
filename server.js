@@ -35,35 +35,100 @@ app.get('/api/v1/products', (request, response) => {
     .catch(error => console.error('error: ', error));
 });
 
-app.get('/api/v1/artwork/:id', (request, response) => {
-  database('artwork').where('id', request.params.id).select()
-  .then((artwork) => {
-    response.status(200).json(artwork);
+app.get('/api/v1/brands/:id', (request, response) => {
+  database('brands').where('id', request.params.id).select()
+  .then((brand) => {
+    response.status(200).json(brand);
+  })
+  .catch((error) => {
+    console.error('error.html', error);
+  });
+});
+
+app.get('/api/v1/products/:id', (request, response) => {
+  database('nailPolish').where('id', request.params.id).select()
+  .then((product) => {
+    response.status(200).json(product);
   })
   .catch((error) => {
     console.error('error: ', error);
   });
 });
 
-app.get('/api/v1/location/:id', (request, response) => {
-  database('location').where('id', request.params.id).select()
-  .then((location) => {
-    response.status(200).json(location);
+// app.post('/api/v1/brands', (request, response) => {
+//   const brandName = request.body.brand;
+//   const brand = request.body.title;
+//
+//   if (!brandName) {
+//     response.status(422).send({
+//       error: 'You are missing data!',
+//     });
+//   } else {
+//     database('brands').insert(brand)
+//     .then(() => {
+//       response.status(201).json({
+//         id: Math.floor(Math.random() * (500 - 30)) + 30,
+//         brand: brandName,
+//       });
+//     })
+//     .catch((error) => {
+//       console.error('error: ', error);
+//     });
+//   }
+// });
+
+app.post('/api/v1/products/brands/:id', (request, response) => {
+  const name = request.body.name;
+  const price = request.body.price;
+  const rating = request.body.rating;
+  const brandId = request.params.id;
+
+  database('brands').where('id', request.params.id).select()
+  .then(() => {
+    if (!name && !price && !rating) {
+      response.status(422).send({
+        error: 'You are missing data!',
+      });
+    } else {
+      database('nailPolish').insert({ brand_id: brandId, name, price, rating })
+      .then(() => {
+        response.status(201).json({ brand_id: brandId, name, price, rating });
+      })
+      .catch((error) => {
+        console.error('error: ', error);
+      });
+    }
+  });
+});
+
+app.delete('/api/v1/products/:id', (request, response) => {
+  database('nailPolish').where('id', request.params.id).delete()
+  .then((product) => {
+    response.status(200).json(product);
   })
   .catch((error) => {
     console.error('error: ', error);
   });
 });
 
-app.get('/api/v1/artists/:id', (request, response) => {
-  database('artists').where('id', request.params.id).select()
-  .then((artists) => {
-    response.status(200).json(artists);
+app.delete('/api/v1/brands/:id', (request, response) => {
+  database('brands').where('id', request.params.id).delete()
+  .then((brand) => {
+    response.status(200).json(brand);
   })
   .catch((error) => {
     console.error('error: ', error);
   });
 });
+
+
+// exports.delete = function(req, res){
+//   var id = req.params.id;
+//   Project.remove({'_id':id},function(result) {
+//     return res.send(result);
+//   });
+// };
+
 
 if (!module.parent) {
   app.listen(app.get('port'), () => {
