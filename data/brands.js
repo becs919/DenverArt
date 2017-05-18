@@ -30,4 +30,9 @@ module.exports = [
   { id: 13, brand: 'sante' },
   { id: 14, brand: 'china glaze' },
   { id: 15, brand: 'wet n wild' },
+  { id: 16, brand: 'salon perfect' },
+  { id: 17, brand: 'misa' },
+  { id: 18, brand: 'moov' },
+  { id: 19, brand: 'anna sui' },
+  { id: 20, brand: 'orly' },
 ];

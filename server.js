@@ -23,21 +23,15 @@ app.get('/', (request, response) => {
   });
 });
 
-app.get('/api/v1/artwork', (request, response) => {
-  database('artwork').select()
-    .then(artwork => response.status(200).json(artwork))
+app.get('/api/v1/brands', (request, response) => {
+  database('brands').select()
+    .then(brand => response.status(200).json(brand))
     .catch(error => console.error('error: ', error));
 });
 
-app.get('/api/v1/artists', (request, response) => {
-  database('artists').select()
-    .then(artists => response.status(200).json(artists))
-    .catch(error => console.error('error: ', error));
-});
-
-app.get('/api/v1/location', (request, response) => {
-  database('location').select()
-    .then(location => response.status(200).json(location))
+app.get('/api/v1/products', (request, response) => {
+  database('nailPolish').select()
+    .then(product => response.status(200).json(product))
     .catch(error => console.error('error: ', error));
 });
 

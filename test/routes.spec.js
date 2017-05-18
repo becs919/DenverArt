@@ -11,6 +11,7 @@ const database = require('knex')(configuration);
 chai.use(chaiHttp);
 
 describe('Everything', () => {
+
   before((done) => {
     database.migrate.latest()
     .then(() => {
@@ -49,17 +50,20 @@ describe('Everything', () => {
   });
 
   describe('API Routes', () => {
-    describe('GET /api/v1/artwork', () => {
-      it('should return all of the artwork', (done) => {
+    describe('GET /api/v1/brands', () => {
+      it('should return all of the brands', (done) => {
         chai.request(server)
-        .get('/api/v1/artwork')
+        .get('/api/v1/brands')
         .end((error, response) => {
+          console.log(response.body[0]);
           response.should.have.status(200);
           response.should.be.json;
           response.body.should.be.a('array');
-          response.body.length.should.equal(8);
-          response.body[0].should.have.property('TITLE');
-          response.body[0].TITLE.should.equal('3 Wild Spaces two of three');
+          response.body.length.should.equal(2);
+          response.body[0].should.have.property('id');
+          response.body[0].id.should.equal(1);
+          response.body[0].should.have.property('brand');
+          response.body[0].brand.should.equal('pacifica');
           done();
         });
       });
@@ -74,31 +78,33 @@ describe('Everything', () => {
       });
     });
 
-    describe('GET /api/v1/artwork/', () => {
-      it('should return specific folder', (done) => {
+    describe('GET /api/v1/products', () => {
+      it('should return all the products', (done) => {
         chai.request(server)
-        .get('/api/v1/folders/73')
+        .get('/api/v1/products')
         .end((error, response) => {
           response.should.have.status(200);
           response.should.be.json;
           response.body.should.be.a('array');
-          response.body.length.should.equal(1);
-          response.body[0].should.have.property('TITLE');
-          response.body[0].TITLE.should.equal('3 Wild Spaces two of three');
+          response.body.length.should.equal(2);
+          response.body[0].should.have.property('brand_id');
+          response.body[0].brand_id.should.equal(1);
+          response.body[0].should.have.property('name');
+          response.body[0].name.should.equal('7 Free Nail Polish Set - Red');
           done();
         });
       });
 
-      it.skip('should return 404 for a non existent route', (done) => {
+      it('should return 404 for a non existent route', (done) => {
         chai.request(server)
-        .get('/api/v1/foolfers/75849392')
+        .get('/api/v1/product')
         .end((error, response) => {
           response.should.have.status(404);
           done();
         });
       });
     });
-
+// STOPPED HERE TESTING STILL NOT IN TEST ENV
     describe('GET /api/v1/folders/:folder_id/urls', () => {
       it.skip('should return specific folder', (done) => {
         chai.request(server)
