@@ -87,8 +87,6 @@ describe('Everything', () => {
           response.should.be.json;
           response.body.should.be.a('array');
           response.body.length.should.equal(2);
-          response.body[0].should.have.property('id');
-          response.body[0].id.should.equal(1);
           response.body[0].should.have.property('brand_id');
           response.body[0].brand_id.should.equal(1);
           response.body[0].should.have.property('name');
@@ -106,7 +104,7 @@ describe('Everything', () => {
         });
       });
     });
-// STOPPED HERE TESTING STILL NOT IN TEST ENV 
+// STOPPED HERE TESTING STILL NOT IN TEST ENV
     describe('GET /api/v1/folders/:folder_id/urls', () => {
       it.skip('should return specific folder', (done) => {
         chai.request(server)
