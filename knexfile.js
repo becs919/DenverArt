@@ -13,24 +13,23 @@ module.exports = {
   },
   test: {
     client: 'pg',
-    connection: 'postgres://localhost/testnails',
-    // connection: process.env.DATABASE_URL ||'postgres://localhost/testnails',
+    connection: process.env.DATABASE_URL || 'postgres://localhost/jetfueltest',
+    useNullAsDefault: true,
     migrations: {
-      directory: './db/migrations',
+      directory: './db/migrations'
     },
     seeds: {
-      directory: './db/seeds/test',
-    },
-    useNullAsDefault: true,
+      directory: './db/test/seeds'
+    }
   },
-  staging: {
-    client: 'pg',
-    connection: process.env.DATABASE_URL + `?ssl=true`,
-    migrations: {
-      directory: './db/migrations',
-    },
-    useNullAsDefault: true,
-  },
+  // staging: {
+  //   client: 'pg',
+  //   connection: process.env.DATABASE_URL + `?ssl=true`,
+  //   migrations: {
+  //     directory: './db/migrations',
+  //   },
+  //   useNullAsDefault: true,
+  // },
   production: {
     client: 'pg',
     connection: process.env.DATABASE_URL + `?ssl=true`,

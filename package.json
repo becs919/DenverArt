@@ -10,6 +10,10 @@
     "test": "./node_modules/.bin/mocha",
     "start": "node server.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/becs919/build-you-own-backend.git"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
