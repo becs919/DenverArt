@@ -318,6 +318,7 @@ describe('Everything', () => {
       it('should create new product for a brand', (done) => {
         chai.request(server)
         .post('/api/v1/products/brands/1')
+        .set('Authorization', process.env.TOKEN)
         .send(
           {
             name: 'Robbie',
@@ -351,6 +352,7 @@ describe('Everything', () => {
       it('should not create a record for non-existant brand', (done) => {
         chai.request(server)
         .post('/api/v1/products/brands/100')
+        .set('Authorization', process.env.TOKEN)
         .send(
           {
             name: 'Robbie',
@@ -367,6 +369,7 @@ describe('Everything', () => {
       it('should not create a record for missing rating', (done) => {
         chai.request(server)
         .post('/api/v1/products/brands/1')
+        .set('Authorization', process.env.TOKEN)
         .send(
           {
             name: 'Robbie',
@@ -382,6 +385,7 @@ describe('Everything', () => {
       it('should not create a record for missing price', (done) => {
         chai.request(server)
         .post('/api/v1/products/brands/1')
+        .set('Authorization', process.env.TOKEN)
         .send(
           {
             name: 'Robbie',
@@ -397,6 +401,7 @@ describe('Everything', () => {
       it('should not create a record for missing name', (done) => {
         chai.request(server)
         .post('/api/v1/products/brands/1')
+        .set('Authorization', process.env.TOKEN)
         .send(
           {
             price: '4.50',
@@ -409,9 +414,24 @@ describe('Everything', () => {
         });
       });
 
+      it('should not post if unauthorized', (done) => {
+        chai.request(server)
+        .post('/api/v1/products/brands/1')
+        .send({
+          name: 'Robbie',
+          price: '4.5',
+          rating: 3,
+        })
+        .end((err, response) => {
+          (response.status).should.equal(403);
+          done();
+        });
+      });
+
       it('should not create a record with missing data', (done) => {
         chai.request(server)
         .post('/api/v1/products/brands/1')
+        .set('Authorization', process.env.TOKEN)
         .send({})
         .end((err, response) => {
           response.should.have.status(422);

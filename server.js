@@ -157,7 +157,7 @@ app.post('/api/v1/brands', checkAuth, (request, response) => {
   }
 });
 
-app.post('/api/v1/products/brands/:id', (request, response) => {
+app.post('/api/v1/products/brands/:id', checkAuth, (request, response) => {
   const name = request.body.name;
   const price = request.body.price;
   const rating = request.body.rating;
