@@ -304,7 +304,7 @@ describe('Everything', () => {
     });
 
     describe('POST /api/v1/products/brands/:id', () => {
-      it('should create new product for a brand', (done) => {
+      it.skip('should create new product for a brand', (done) => {
         chai.request(server)
         .post('/api/v1/products/brands/1')
         .set('Authorization', process.env.TOKEN)

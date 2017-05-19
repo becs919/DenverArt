@@ -11,4 +11,4 @@ deployment:
   production:
     branch: master
     heroku:
-      appname: shorturl-jetfuel    
+      appname: polish-data
