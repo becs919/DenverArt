@@ -87,8 +87,8 @@ app.patch('/api/v1/products/:id', (request, response) => {
   .then(() => {
     response.status(200).send('updated');
   })
-  .catch((error) => {
-    response.send(error);
+  .catch(() => {
+    response.status(422).send('not updated');
   });
 });
 
