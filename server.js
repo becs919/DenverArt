@@ -12,13 +12,9 @@ const database = require('knex')(configuration);
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.set('secretKey', config.CLIENT_SECRET);
+app.set('secretKey', process.env.CLIENT_SECRET || config.CLIENT_SECRET);
 const token = jwt.sign('user', app.get('secretKey'));
 app.set('port', process.env.PORT || 3000);
-
-if (!config.CLIENT_SECRET || !config.USERNAME || !config.PASSWORD) {
-  throw 'Make sure you have a CLIENT_SECRET, USERNAME, and PASSWORD in your .env file';
-}
 
 if (!module.parent) {
   app.listen(app.get('port'), () => {
