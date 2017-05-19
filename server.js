@@ -2,25 +2,16 @@ const express = require('express');
 
 const app = express();
 const bodyParser = require('body-parser');
-const fs = require('fs');
 
 const environment = process.env.NODE_ENV || 'development';
 const configuration = require('./knexfile')[environment];
 const database = require('knex')(configuration);
 
 app.set('port', process.env.PORT || 3000);
-app.locals.title = 'DenverArt';
+app.locals.title = 'Polish';
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
-app.use(express.static('public'));
-
-app.get('/', (request, response) => {
-  fs.readFile(`${__dirname}/index.html`, (err, file) => {
-    response.send(file);
-  });
-});
 
 app.get('/api/v1/brands', (request, response) => {
   database('brands').select()
@@ -71,6 +62,36 @@ app.get('/api/v1/brands/:id', (request, response) => {
   });
 });
 
+app.patch('/api/v1/brands/:id', (request, response) => {
+  const name = request.body.brand;
+
+  if (!name) {
+    response.status(404).send('not found');
+  } else {
+    database('brands').where('id', request.params.id).update({ brand: name })
+    .then(() => {
+      response.status(200).send('updated');
+    })
+    .catch(() => {
+      response.status(422).send('not updated');
+    });
+  }
+});
+
+app.patch('/api/v1/products/:id', (request, response) => {
+  const name = request.body.name;
+  const price = request.body.price;
+  const rating = request.body.rating;
+
+  database('nailPolish').where('id', request.params.id).update({ name, price, rating })
+  .then(() => {
+    response.status(200).send('updated');
+  })
+  .catch(() => {
+    response.status(422).send('not updated');
+  });
+});
+
 app.get('/api/v1/products/:id', (request, response) => {
   database('nailPolish').where('id', request.params.id).select()
   .then((product) => {
@@ -117,7 +138,7 @@ app.post('/api/v1/products/brands/:id', (request, response) => {
       .then(() => {
         response.status(201).json({ brand_id: brandId, name, price, rating });
       })
-      .catch((error) => {
+      .catch(() => {
         response.status(404).send('no matching brand');
       });
     }
@@ -135,19 +156,16 @@ app.delete('/api/v1/products/:id', (request, response) => {
 });
 
 app.delete('/api/v1/brands/:id', (request, response) => {
-  database('brands').where('id', request.params.id).delete()
+  database('nailPolish').where('brand_id', request.params.id).update({ brand_id: null })
   .then(() => {
-    response.sendStatus(204);
+    return database('brands').where('id', request.params.id).delete();
+  })
+  .then(() => {
+    response.status(204).send('deleted');
   })
   .catch(() => {
     response.status(404).send('nothing deleted');
   });
 });
-
-if (!module.parent) {
-  app.listen(app.get('port'), () => {
-    console.log(`${app.locals.title} is running on ${app.get('port')}.`);
-  });
-}
 
 module.exports = app;

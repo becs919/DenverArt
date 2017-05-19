@@ -13,7 +13,7 @@ module.exports = {
   },
   test: {
     client: 'pg',
-    connection: process.env.NODE_ENV = 'test' || 'postgres://localhost/testnails',
+    connection: 'postgres://localhost/testnails',
     migrations: {
       directory: './db/migrations',
     },
