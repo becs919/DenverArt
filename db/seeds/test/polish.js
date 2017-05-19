@@ -1,4 +1,4 @@
-exports.seed = function(knex, Promise) {
+exports.seed = function (knex, Promise) {
   return knex('nailPolish').del()
     .then(() => knex('brands').del())
     .then(() => {
