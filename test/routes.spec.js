@@ -308,7 +308,6 @@ describe('Everything', () => {
           name: 'Robbie',
         })
         .end((err, response) => {
-          console.log(response.status);
           response.status.should.equal(422);
           done();
         });
