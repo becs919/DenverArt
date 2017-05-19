@@ -425,6 +425,7 @@ describe('Everything', () => {
       it('should delete brand by id with no foreign key relation', (done) => {
         chai.request(server)
         .delete('/api/v1/brands/3')
+        .set('Authorization', process.env.TOKEN)
         .end((error, response) => {
           response.should.have.status(204);
           chai.request(server)
@@ -441,6 +442,7 @@ describe('Everything', () => {
       it('should delete brand by id with foreign key relation and change foreign keys to null', (done) => {
         chai.request(server)
         .delete('/api/v1/brands/2')
+        .set('Authorization', process.env.TOKEN)
         .end((error, response) => {
           response.should.have.status(204);
           chai.request(server)
@@ -462,9 +464,20 @@ describe('Everything', () => {
         });
       });
 
+      it('should not delete if unauthorized', (done) => {
+        chai.request(server)
+        .delete('/api/v1/brands/2')
+        .send({})
+        .end((err, response) => {
+          response.should.have.status(403);
+          done();
+        });
+      });
+
       it('should return error when no brand to delete', (done) => {
         chai.request(server)
         .delete('/api/v1/brands/3sdf')
+        .set('Authorization', process.env.TOKEN)
         .end((error, response) => {
           response.should.have.status(404);
           response.error.text.should.equal('nothing deleted');
@@ -477,6 +490,7 @@ describe('Everything', () => {
       it('should delete product by id', (done) => {
         chai.request(server)
         .delete('/api/v1/products/1')
+        .set('Authorization', process.env.TOKEN)
         .end((error, response) => {
           response.should.have.status(204);
           chai.request(server)
@@ -492,9 +506,20 @@ describe('Everything', () => {
         });
       });
 
+      it('should not delete if unauthorized', (done) => {
+        chai.request(server)
+        .delete('/api/v1/products/1')
+        .send({})
+        .end((err, response) => {
+          response.should.have.status(403);
+          done();
+        });
+      });
+
       it('should return error when no product to delete', (done) => {
         chai.request(server)
         .delete('/api/v1/products/3sdf')
+        .set('Authorization', process.env.TOKEN)
         .end((error, response) => {
           response.should.have.status(404);
           response.error.text.should.equal('nothing deleted');

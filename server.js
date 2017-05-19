@@ -183,7 +183,7 @@ app.post('/api/v1/products/brands/:id', (request, response) => {
   });
 });
 
-app.delete('/api/v1/products/:id', (request, response) => {
+app.delete('/api/v1/products/:id', checkAuth, (request, response) => {
   database('nailPolish').where('id', request.params.id).delete()
   .then(() => {
     response.sendStatus(204);
@@ -193,7 +193,7 @@ app.delete('/api/v1/products/:id', (request, response) => {
   });
 });
 
-app.delete('/api/v1/brands/:id', (request, response) => {
+app.delete('/api/v1/brands/:id', checkAuth, (request, response) => {
   database('nailPolish').where('brand_id', request.params.id).update({ brand_id: null })
   .then(() => {
     return database('brands').where('id', request.params.id).delete();
