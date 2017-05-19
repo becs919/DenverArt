@@ -194,6 +194,99 @@ describe('Everything', () => {
       });
     });
 
+    describe('PATCH /api/v1/brands/:id', () => {
+      it('should update brand name', (done) => {
+        chai.request(server)
+        .patch('/api/v1/brands/1')
+        .send(
+          {
+            brand: 'Robbie',
+          })
+        .end((error, response) => {
+          response.should.have.status(200);
+          chai.request(server)
+          .get('/api/v1/brands')
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('array');
+          res.body.length.should.equal(3);
+          res.body[2].should.have.property('brand');
+          res.body[2].brand.should.equal('Robbie');
+          done();
+        });
+        });
+      });
+
+      it('should not create a record with missing data', (done) => {
+        chai.request(server)
+        .patch('/api/v1/brands/94586')
+        .send({})
+        .end((err, response) => {
+          (response.status === 404).should.equal(true);
+          done();
+        });
+      });
+
+      it('should not create a record with unknown brand id', (done) => {
+        chai.request(server)
+        .patch('/api/v1/brands/94586')
+        .send({
+          brand: 'Robbie',
+        })
+        .end((err, response) => {
+          console.log(response.status);
+          (response.status === 404).should.equal(true);
+          done();
+        });
+      });
+    });
+
+    describe('PATCH /api/v1/products/:id', () => {
+      it.skip('should update product info', (done) => {
+        chai.request(server)
+        .patch('/api/v1/products/1')
+        .send(
+          {
+            name: 'Robbie',
+          })
+        .end((error, response) => {
+          response.should.have.status(200);
+          chai.request(server)
+          .get('/api/v1/products/1')
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('array');
+          res.body.length.should.equal(1);
+          res.body[0].should.have.property('name');
+          res.body[0].name.should.equal('Robbie');
+          done();
+        });
+        });
+      });
+
+      it.skip('should not create a record with missing data', (done) => {
+        chai.request(server)
+        .patch('/api/v1/products/1')
+        .send({})
+        .end((err, response) => {
+          (response.status === 422).should.equal(true);
+          done();
+        });
+      });
+
+      it.skip('should not create a record with invalid product number', (done) => {
+        chai.request(server)
+        .patch('/api/v1/products/32546')
+        .send({
+          name: 'Robbie',
+        })
+        .end((err, response) => {
+          console.log(response.status);
+          response.status.should.equal(422);
+          done();
+        });
+      });
+    });
 
     describe('POST /api/v1/products/brands/:id', () => {
       it('should create new product for a brand', (done) => {
@@ -319,6 +412,30 @@ describe('Everything', () => {
         });
       });
 
+      it('should delete brand by id with foreign key relation and change foreign keys to null', (done) => {
+        chai.request(server)
+        .delete('/api/v1/brands/2')
+        .end((error, response) => {
+          response.should.have.status(204);
+          chai.request(server)
+          .get('/api/v1/brands')
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('array');
+          res.body.length.should.equal(2);
+          chai.request(server)
+          .get('/api/v1/products')
+        .end((errProducts, resProducts) => {
+          resProducts.should.have.status(200);
+          resProducts.body.should.be.a('array');
+          resProducts.body.length.should.equal(2);
+          (resProducts.body[1].brand_id === null).should.equal(true);
+          done();
+        });
+        });
+        });
+      });
+
       it('should return error when no brand to delete', (done) => {
         chai.request(server)
         .delete('/api/v1/brands/3sdf')
@@ -331,7 +448,7 @@ describe('Everything', () => {
     });
 
     describe('DELETE /api/v1/products/:id', () => {
-      it('should delete brand by id', (done) => {
+      it('should delete product by id', (done) => {
         chai.request(server)
         .delete('/api/v1/products/1')
         .end((error, response) => {
@@ -349,7 +466,7 @@ describe('Everything', () => {
         });
       });
 
-      it('should return error when no brand to delete', (done) => {
+      it('should return error when no product to delete', (done) => {
         chai.request(server)
         .delete('/api/v1/products/3sdf')
         .end((error, response) => {
