@@ -231,7 +231,7 @@ describe('Everything', () => {
         });
       });
 
-      it('should not create a record with missing data', (done) => {
+      it('should not patch a record with missing data', (done) => {
         chai.request(server)
         .patch('/api/v1/brands/94586')
         .set('Authorization', process.env.TOKEN)
@@ -242,7 +242,7 @@ describe('Everything', () => {
         });
       });
 
-      it('should not let you create if not authorized', (done) => {
+      it('should not let you patch if not authorized', (done) => {
         chai.request(server)
         .patch('/api/v1/brands/94586')
         .send({
@@ -253,25 +253,13 @@ describe('Everything', () => {
           done();
         });
       });
-
-      it.skip('should not create a record with unknown brand id', (done) => {
-        chai.request(server)
-        .patch('/api/v1/brands/94586')
-        .set('Authorization', process.env.TOKEN)
-        .send({
-          brand: 'Robbie',
-        })
-        .end((err, response) => {
-          (response.status === 404).should.equal(true);
-          done();
-        });
-      });
     });
 
     describe('PATCH /api/v1/products/:id', () => {
       it('should update product info', (done) => {
         chai.request(server)
         .patch('/api/v1/products/1')
+        .set('Authorization', process.env.TOKEN)
         .send(
           {
             name: 'Robbie',
@@ -291,24 +279,25 @@ describe('Everything', () => {
         });
       });
 
-      it('should not create a record with missing data', (done) => {
+      it('should not let you patch if not authorized', (done) => {
         chai.request(server)
         .patch('/api/v1/products/1')
-        .send({})
+        .send({
+          brand: 'Robbie',
+        })
         .end((err, response) => {
-          (response.status === 422).should.equal(true);
+          (response.status === 403).should.equal(true);
           done();
         });
       });
 
-      it.skip('should not create a record with invalid product number', (done) => {
+      it('should not patch a record with missing data', (done) => {
         chai.request(server)
-        .patch('/api/v1/products/32546')
-        .send({
-          name: 'Robbie',
-        })
+        .patch('/api/v1/products/1')
+        .set('Authorization', process.env.TOKEN)
+        .send({})
         .end((err, response) => {
-          response.status.should.equal(422);
+          (response.status === 422).should.equal(true);
           done();
         });
       });

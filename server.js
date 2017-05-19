@@ -116,7 +116,7 @@ app.patch('/api/v1/brands/:id', checkAuth, (request, response) => {
   }
 });
 
-app.patch('/api/v1/products/:id', (request, response) => {
+app.patch('/api/v1/products/:id', checkAuth, (request, response) => {
   const name = request.body.name;
   const price = request.body.price;
   const rating = request.body.rating;
