@@ -16,11 +16,11 @@ module.exports = {
     connection: process.env.DATABASE_URL || 'postgres://localhost/jetfueltest',
     useNullAsDefault: true,
     migrations: {
-      directory: './db/migrations'
+      directory: './db/migrations',
     },
     seeds: {
-      directory: './db/test/seeds'
-    }
+      directory: './db/test/seeds',
+    },
   },
   // staging: {
   //   client: 'pg',
