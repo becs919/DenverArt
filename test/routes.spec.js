@@ -13,24 +13,24 @@ chai.use(chaiHttp);
 describe('Everything', () => {
   before((done) => {
     database.migrate.latest()
-    .then(() => {
-      database.seed.run()
-      .then(() => {
-        done();
-      });
-    });
+   .then(() => {
+     return database.seed.run();
+   })
+   .then(() => {
+     done();
+   });
   });
 
-  afterEach((done) => {
+  beforeEach((done) => {
     database.seed.run()
-    .then(() => {
-      done();
-    });
+   .then(() => {
+     done();
+   });
   });
 
   describe('API Routes', () => {
     describe('GET /api/v1/brands', () => {
-      it.skip('should return all of the brands', (done) => {
+      it('should return all of the brands', (done) => {
         chai.request(server)
         .get('/api/v1/brands')
         .set('Authorization', process.env.TOKEN)
@@ -158,7 +158,7 @@ describe('Everything', () => {
     });
 
     describe('POST /api/v1/brands', () => {
-      it.skip('should create new brand', (done) => {
+      it('should create new brand', (done) => {
         chai.request(server)
         .post('/api/v1/brands')
         .send(
@@ -184,7 +184,7 @@ describe('Everything', () => {
         });
       });
 
-      it.skip('should not create a record with missing data', (done) => {
+      it('should not create a record with missing data', (done) => {
         chai.request(server)
         .post('/api/v1/brands')
         .send({})
@@ -208,7 +208,7 @@ describe('Everything', () => {
     });
 
     describe('PATCH /api/v1/brands/:id', () => {
-      it.skip('should update brand name', (done) => {
+      it('should update brand name', (done) => {
         chai.request(server)
         .patch('/api/v1/brands/1')
         .set('Authorization', process.env.TOKEN)
@@ -231,7 +231,7 @@ describe('Everything', () => {
         });
       });
 
-      it.skip('should not create a record with missing data', (done) => {
+      it('should not create a record with missing data', (done) => {
         chai.request(server)
         .patch('/api/v1/brands/94586')
         .set('Authorization', process.env.TOKEN)

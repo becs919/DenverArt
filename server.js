@@ -1,37 +1,42 @@
 const express = require('express');
 
-const jwt = require('jsonwebtoken');
-const cors = require('cors');
-
 const app = express();
 const bodyParser = require('body-parser');
+const jwt = require('jsonwebtoken');
 const config = require('dotenv').config().parsed;
 
 const environment = process.env.NODE_ENV || 'development';
 const configuration = require('./knexfile')[environment];
 const database = require('knex')(configuration);
 
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+
+app.set('secretKey', config.CLIENT_SECRET);
+const token = jwt.sign('user', app.get('secretKey'));
 app.set('port', process.env.PORT || 3000);
-app.locals.title = 'Polish';
 
 if (!config.CLIENT_SECRET || !config.USERNAME || !config.PASSWORD) {
   throw 'Make sure you have a CLIENT_SECRET, USERNAME, and PASSWORD in your .env file';
 }
-app.set('secretKey', config.CLIENT_SECRET);
-const token = jwt.sign('user', app.get('secretKey'));
+
+if (!module.parent) {
+  app.listen(app.get('port'), () => {
+    console.log(`${app.locals.title} is running on ${app.get('port')}.`);
+  });
+}
 
 const checkAuth = (request, response, next) => {
   const token = request.body.token ||
-  request.params.token ||
-  request.headers.authorization;
+                request.params.token ||
+                request.headers['authorization'];
+
   if (token) {
     jwt.verify(token, app.get('secretKey'), (error, decoded) => {
       if (error) {
         return response.status(403).send({
           success: false,
-          message: 'You shall not pass',
+          message: 'Invalid authorization token.',
         });
       } else {
         request.decoded = decoded;
@@ -41,7 +46,7 @@ const checkAuth = (request, response, next) => {
   } else {
     return response.status(403).send({
       success: false,
-      message: 'You are not authorized to hit this end point',
+      message: 'You must be authorized to hit this endpoint',
     });
   }
 };
