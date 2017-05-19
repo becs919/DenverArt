@@ -12,3 +12,7 @@ deployment:
     branch: master
     heroku:
       appname: shorturl-jetfuel
+
+dependencies:
+  override:
+    - mv config/secrets.ci.yml config/secrets.yml      
