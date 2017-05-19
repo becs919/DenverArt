@@ -30,9 +30,10 @@ describe('Everything', () => {
 
   describe('API Routes', () => {
     describe('GET /api/v1/brands', () => {
-      it('should return all of the brands', (done) => {
+      it.skip('should return all of the brands', (done) => {
         chai.request(server)
         .get('/api/v1/brands')
+        .set('Authorization', process.env.TOKEN)
         .end((error, response) => {
           response.should.have.status(200);
           response.body.should.be.a('array');
@@ -157,13 +158,14 @@ describe('Everything', () => {
     });
 
     describe('POST /api/v1/brands', () => {
-      it('should create new brand', (done) => {
+      it.skip('should create new brand', (done) => {
         chai.request(server)
         .post('/api/v1/brands')
         .send(
           {
             brand: 'Robbie',
           })
+        .set('Authorization', process.env.TOKEN)
         .end((error, response) => {
           response.should.have.status(201);
           response.body.should.be.a('object');
@@ -182,22 +184,34 @@ describe('Everything', () => {
         });
       });
 
-      it('should not create a record with missing data', (done) => {
+      it.skip('should not create a record with missing data', (done) => {
         chai.request(server)
         .post('/api/v1/brands')
         .send({})
+        .set('Authorization', process.env.TOKEN)
         .end((err, response) => {
           response.should.have.status(422);
           response.body.error.should.equal('You are missing data');
           done();
         });
       });
+
+      it('should not create if unauthorized', (done) => {
+        chai.request(server)
+        .post('/api/v1/brands')
+        .send({})
+        .end((err, response) => {
+          response.should.have.status(403);
+          done();
+        });
+      });
     });
 
     describe('PATCH /api/v1/brands/:id', () => {
-      it('should update brand name', (done) => {
+      it.skip('should update brand name', (done) => {
         chai.request(server)
         .patch('/api/v1/brands/1')
+        .set('Authorization', process.env.TOKEN)
         .send(
           {
             brand: 'Robbie',
@@ -217,9 +231,10 @@ describe('Everything', () => {
         });
       });
 
-      it('should not create a record with missing data', (done) => {
+      it.skip('should not create a record with missing data', (done) => {
         chai.request(server)
         .patch('/api/v1/brands/94586')
+        .set('Authorization', process.env.TOKEN)
         .send({})
         .end((err, response) => {
           (response.status === 404).should.equal(true);
@@ -227,9 +242,22 @@ describe('Everything', () => {
         });
       });
 
+      it('should not let you create if not authorized', (done) => {
+        chai.request(server)
+        .patch('/api/v1/brands/94586')
+        .send({
+          brand: 'Robbie',
+        })
+        .end((err, response) => {
+          (response.status === 403).should.equal(true);
+          done();
+        });
+      });
+
       it.skip('should not create a record with unknown brand id', (done) => {
         chai.request(server)
         .patch('/api/v1/brands/94586')
+        .set('Authorization', process.env.TOKEN)
         .send({
           brand: 'Robbie',
         })
@@ -280,7 +308,6 @@ describe('Everything', () => {
           name: 'Robbie',
         })
         .end((err, response) => {
-          console.log(response.status);
           response.status.should.equal(422);
           done();
         });
